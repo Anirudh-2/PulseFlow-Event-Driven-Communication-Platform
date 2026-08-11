@@ -1,0 +1,46 @@
+{
+  "info": {
+    "name": "PulseFlow API",
+    "_postman_id": "8de57814-4782-4f8a-81eb-c00f4f3f6d01",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Create Event",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": "{{baseUrl}}/notifications/events",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"tenantId\":\"default\",\"eventType\":\"order_created\",\"sourceService\":\"orders\",\"sourceEventId\":\"evt-100\",\"userId\":\"u123\",\"roleName\":\"EMPLOYEE\",\"payload\":{\"event_type\":\"order_created\",\"amount\":1500,\"user_id\":\"u123\"}}"
+        }
+      }
+    },
+    {
+      "name": "List Notifications",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/notifications?tenantId=default"
+      }
+    },
+    {
+      "name": "List Rules",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/admin/rules?tenantId=default"
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8081/api/v1"
+    }
+  ]
+}
