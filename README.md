@@ -862,11 +862,13 @@ curl -X POST "http://localhost:8081/api/v1/admin/rules?tenantId=default" \
   -H "Authorization: Bearer <admin-jwt>" \
   -d '{
     "name": "High Value Orders",
-    "targetRole": "EMPLOYEE",
+    "roleName": "EMPLOYEE",
     "eventType": "ORDER_CREATED",
     "notificationType": "WORKFLOW",
     "conditions": {"min_amount": 1000},
-    "channels": ["WEBSOCKET", "EMAIL"]
+    "channels": ["WEBSOCKET", "EMAIL"],
+    "evalOrder": 10,
+    "isActive": true
   }'
 ```
 
@@ -878,9 +880,17 @@ curl -X POST "http://localhost:8081/api/v1/hrms/webhook" \
   -H "X-Webhook-Api-Key: changeme" \
   -H "X-Tenant-Id: default" \
   -d '{
-    "event_type": "leave_approved",
-    "user_id": "u123",
-    "leave_id": "L-456"
+    "eventType": "LEAVE_APPROVED",
+    "sourceEventId": "evt-hrms-001",
+    "userId": "u123",
+    "userEmail": "u123@example.com",
+    "aadObjectId": "aad-object-id-abc",
+    "roleName": "EMPLOYEE",
+    "payload": {
+      "leaveId": "L-456",
+      "leaveType": "annual",
+      "days": 3
+    }
   }'
 ```
 
@@ -891,7 +901,15 @@ curl -X POST "http://localhost:8081/api/v1/integrations/my-app/webhook" \
   -H "Content-Type: application/json" \
   -H "X-Webhook-Api-Key: <source-api-key>" \
   -H "X-Tenant-Id: default" \
-  -d '{"event": "payment_received", "amount": 500}'
+  -d '{
+    "eventType": "PAYMENT_RECEIVED",
+    "sourceEventId": "evt-int-001",
+    "userId": "u123",
+    "roleName": "EMPLOYEE",
+    "payload": {
+      "amount": 500
+    }
+  }'
 ```
 
 #### Test Channel Configuration
@@ -908,6 +926,16 @@ curl -X POST "http://localhost:8081/api/v1/notifications/<notification-id>/read?
   -H "Authorization: Bearer <jwt>"
 ```
 
+### Non-supported / limited inputs (current version)
+
+- **SMTP**: attachments and open/click tracking pixels are **not supported**.
+- **Stub channels**: `SSE`, `PUSH`, and `POLLING` exist in the enum/adapters but are **not selectable** in admin rules and are not demo-ready.
+- **Ordering**: optional `sequenceNumber` / `eventTimestamp` are supported; when `sequenceNumber` is provided, older out-of-order events are dropped (latest wins).
+- **WhatsApp**: missing Twilio credentials / destination phone are treated as non-retryable `SKIPPED` (no DLQ churn).
+- **Outbound webhook**: optional `authType` (`API_KEY` / `BASIC` / `BEARER`) + explicit connect/read timeouts are supported via channel `configJson`.
+
+See also ops metrics/alerts: [docs/MONITORING.md](docs/MONITORING.md).
+
 ---
 
 ## 7. Channel Delivery System
@@ -921,7 +949,7 @@ Source: [backend/src/main/java/com/pulseflow/adapter/channel/](backend/src/main/
 | Channel | Adapter Class | Status | Integration Service |
 |---------|----------------|--------|---------------------|
 | EMAIL | `EmailChannelSender` | Implemented | `SmtpDeliveryService` |
-| TEAMS | `TeamsChannelSender` | Implemented | `TeamsGraphService` (Microsoft Graph OAuth2) |
+| TEAMS | `TeamsChannelSender` | Implemented | Incoming Teams Webhook (Adaptive Cards) |
 | TELEGRAM | `TelegramChannelSender` | Implemented | `TelegramBotService` |
 | WHATSAPP | `WhatsappChannelSender` | Implemented | Twilio SDK |
 | WEBSOCKET | `WebSocketChannelSender` | Implemented | STOMP broker (`/ws`, topic `/topic/tenant/{tenantId}`) |

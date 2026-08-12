@@ -35,12 +35,99 @@
         "method": "GET",
         "url": "{{baseUrl}}/admin/rules?tenantId=default"
       }
+    },
+    {
+      "name": "Create Admin Rule",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{adminJwt}}"
+          }
+        ],
+        "url": "{{baseUrl}}/admin/rules?tenantId={{tenantId}}",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"High Value Orders\",\n  \"roleName\": \"EMPLOYEE\",\n  \"eventType\": \"ORDER_CREATED\",\n  \"notificationType\": \"WORKFLOW\",\n  \"conditions\": {\"min_amount\": 1000},\n  \"channels\": [\"WEBSOCKET\", \"EMAIL\"],\n  \"evalOrder\": 10,\n  \"isActive\": true\n}"
+        }
+      }
+    },
+    {
+      "name": "HRMS Webhook Ingestion",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X-Webhook-Api-Key",
+            "value": "{{webhookApiKey}}"
+          },
+          {
+            "key": "X-Tenant-Id",
+            "value": "{{tenantId}}"
+          }
+        ],
+        "url": "{{baseUrl}}/hrms/webhook",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"eventType\": \"LEAVE_APPROVED\",\n  \"sourceEventId\": \"evt-hrms-001\",\n  \"userId\": \"u123\",\n  \"userEmail\": \"u123@example.com\",\n  \"aadObjectId\": \"aad-object-id-abc\",\n  \"roleName\": \"EMPLOYEE\",\n  \"payload\": {\n    \"leaveId\": \"L-456\",\n    \"leaveType\": \"annual\",\n    \"days\": 3\n  }\n}"
+        }
+      }
+    },
+    {
+      "name": "Integration Webhook (Normalized Fields)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "X-Webhook-Api-Key",
+            "value": "{{webhookApiKey}}"
+          },
+          {
+            "key": "X-Tenant-Id",
+            "value": "{{tenantId}}"
+          }
+        ],
+        "url": "{{baseUrl}}/integrations/my-app/webhook",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"eventType\": \"PAYMENT_RECEIVED\",\n  \"sourceEventId\": \"evt-int-001\",\n  \"userId\": \"u123\",\n  \"roleName\": \"EMPLOYEE\",\n  \"payload\": {\n    \"amount\": 500\n  }\n}"
+        }
+      }
     }
   ],
   "variable": [
     {
       "key": "baseUrl",
       "value": "http://localhost:8081/api/v1"
+    },
+    {
+      "key": "tenantId",
+      "value": "default"
+    },
+    {
+      "key": "jwt",
+      "value": ""
+    },
+    {
+      "key": "adminJwt",
+      "value": ""
+    },
+    {
+      "key": "webhookApiKey",
+      "value": "changeme"
     }
   ]
 }
