@@ -1,0 +1,117 @@
+spring:
+  application:
+    name: pulseflow
+  datasource:
+    url: ${DB_URL:jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:pulseflow}?currentSchema=notif&TimeZone=Asia/Kolkata}
+    username: ${DB_USER:postgres}
+    password: ${DB_PASSWORD:postgres}
+  jpa:
+    hibernate:
+      ddl-auto: ${JPA_DDL_AUTO:validate}
+    properties:
+      hibernate:
+        format_sql: ${JPA_FORMAT_SQL:false}
+        default_schema: ${DB_SCHEMA:notif}
+    open-in-view: false
+  flyway:
+    enabled: ${FLYWAY_ENABLED:true}
+    locations: ${FLYWAY_LOCATIONS:classpath:db/migration}
+    default-schema: ${DB_SCHEMA:notif}
+    schemas: ${DB_SCHEMA:notif}
+    create-schemas: true
+  autoconfigure:
+    exclude:
+      - org.springframework.boot.autoconfigure.mail.MailSenderAutoConfiguration
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USER:guest}
+    password: ${RABBITMQ_PASSWORD:guest}
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${KEYCLOAK_ISSUER_URI:http://localhost:8080/realms/pulseflow}
+
+server:
+  port: ${SERVER_PORT:8081}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: when_authorized
+  metrics:
+    tags:
+      application: ${spring.application.name:pulseflow}
+
+app:
+  archive:
+    retention-days: 90
+  delivery:
+    max-attempts: 4
+    default-channel: WEBSOCKET
+    default-locale: en
+    retry:
+      delay-1-seconds: 5
+      delay-2-seconds: 30
+      delay-3-seconds: 300
+  keycloak:
+    # Set in Docker to http://keycloak:8080/realms/pulseflow/protocol/openid-connect/certs
+    jwks-uri: ${APP_KEYCLOAK_JWKS_URI:}
+    bootstrap:
+      enabled: ${KEYCLOAK_BOOTSTRAP_ENABLED:true}
+      server-url: ${KEYCLOAK_SERVER_URL:http://localhost:8080}
+      admin-realm: ${KEYCLOAK_ADMIN_REALM:master}
+      admin-client-id: ${KEYCLOAK_ADMIN_CLIENT_ID:admin-cli}
+      admin-username: ${KEYCLOAK_ADMIN:admin}
+      admin-password: ${KEYCLOAK_ADMIN_PASSWORD:admin}
+      import-path: ${KEYCLOAK_REALM_IMPORT_PATH:classpath:keycloak/pulseflow-realm.json}
+      postman-client-id: ${KEYCLOAK_POSTMAN_CLIENT_ID:pulseflow-postman}
+      postman-client-secret: ${KEYCLOAK_POSTMAN_CLIENT_SECRET:pulseflow-postman-secret}
+  cors:
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173}
+  messaging:
+    exchange: ${RABBITMQ_EXCHANGE:pulseflow.events}
+    queue: ${RABBITMQ_QUEUE:pulseflow.events.queue}
+    dlq: ${RABBITMQ_DLQ:pulseflow.events.dlq}
+    routing-key: ${RABBITMQ_ROUTING_KEY:pulseflow.event.created}
+    delivery-queue: ${RABBITMQ_DELIVERY_QUEUE:pulseflow.delivery.queue}
+    delivery-dlq: ${RABBITMQ_DELIVERY_DLQ:pulseflow.delivery.dlq}
+    delivery-routing-key: ${RABBITMQ_DELIVERY_ROUTING_KEY:pulseflow.delivery.job}
+    delivery-retry-5s-queue: ${RABBITMQ_DELIVERY_RETRY_5S_QUEUE:pulseflow.delivery.retry.5s.queue}
+    delivery-retry-30s-queue: ${RABBITMQ_DELIVERY_RETRY_30S_QUEUE:pulseflow.delivery.retry.30s.queue}
+    delivery-retry-5m-queue: ${RABBITMQ_DELIVERY_RETRY_5M_QUEUE:pulseflow.delivery.retry.5m.queue}
+    delivery-retry-5s-routing-key: ${RABBITMQ_DELIVERY_RETRY_5S_ROUTING_KEY:pulseflow.delivery.retry.5s}
+    delivery-retry-30s-routing-key: ${RABBITMQ_DELIVERY_RETRY_30S_ROUTING_KEY:pulseflow.delivery.retry.30s}
+    delivery-retry-5m-routing-key: ${RABBITMQ_DELIVERY_RETRY_5M_ROUTING_KEY:pulseflow.delivery.retry.5m}
+    delivery-async: ${RABBITMQ_DELIVERY_ASYNC:true}
+  integrations:
+    smtpFrom: ${SMTP_FROM:no-reply@pulseflow.local}
+    hrmsWebhookApiKey: ${HRMS_WEBHOOK_API_KEY:changeme}
+    hrmsDefaultTenantId: ${HRMS_DEFAULT_TENANT_ID:default}
+    twilioSid: ${TWILIO_ACCOUNT_SID:}
+    twilioToken: ${TWILIO_AUTH_TOKEN:}
+    twilioWhatsappFrom: ${TWILIO_WHATSAPP_FROM:}
+    graph:
+      clientId: ${GRAPH_CLIENT_ID:}
+      clientSecret: ${GRAPH_CLIENT_SECRET:}
+      tenantId: ${GRAPH_TENANT_ID:}
+      botUserId: ${GRAPH_BOT_USER_ID:}
+    telegram:
+      enabled: ${TELEGRAM_ENABLED:false}
+      botToken: ${TELEGRAM_BOT_TOKEN:}
+      apiBase: ${TELEGRAM_API_BASE:https://api.telegram.org}
+      parseMode: ${TELEGRAM_PARSE_MODE:Markdown}
+
+logging:
+  level:
+    root: ${LOG_LEVEL_ROOT:INFO}
+    com.pulseflow: ${LOG_LEVEL_APP:INFO}

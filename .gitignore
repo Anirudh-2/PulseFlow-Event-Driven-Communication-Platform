@@ -1,0 +1,44 @@
+# Nested repo metadata (if present)
+backend/.git/
+frontend/.git/
+backend.git.bak/
+frontend.git.bak/
+**/.git/
+
+# Secrets / local env
+.env
+.env.local
+backend/.env
+frontend/.env
+frontend/.env.local
+
+# Backend build
+backend/target/
+**/target/
+*.class
+*.jar
+*.war
+
+# Frontend deps/build
+frontend/node_modules/
+frontend/dist/
+frontend/playwright-report/
+frontend/test-results/
+**/node_modules/
+
+# IDE / OS
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db
+
+# Local scratch / curl dumps in backend root
+backend/*.json
+backend/npm/
+backend/frontend@0.0.0/
+backend/setup-step8.sql
+backend/setup-webhook-delivered.sql
+
+# Logs
+*.log

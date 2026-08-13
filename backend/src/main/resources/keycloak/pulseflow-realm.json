@@ -1,0 +1,117 @@
+{
+  "id": "pulseflow",
+  "realm": "pulseflow",
+  "displayName": "PulseFlow Realm",
+  "enabled": true,
+  "sslRequired": "external",
+  "registrationAllowed": false,
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "resetPasswordAllowed": true,
+  "rememberMe": true,
+  "accessTokenLifespan": 18000,
+  "ssoSessionIdleTimeout": 43200,
+  "ssoSessionMaxLifespan": 43200,
+  "offlineSessionIdleTimeout": 2592000,
+  "offlineSessionMaxLifespanEnabled": false,
+  "clientSessionIdleTimeout": 43200,
+  "clientSessionMaxLifespan": 43200,
+  "clientOfflineSessionIdleTimeout": 2592000,
+  "clientOfflineSessionMaxLifespan": 2592000,
+  "roles": {
+    "realm": [
+      {
+        "name": "ADMIN",
+        "description": "Administrative access to notification management."
+      },
+      {
+        "name": "EMPLOYEE",
+        "description": "Standard user access."
+      }
+    ]
+  },
+  "users": [
+    {
+      "username": "pulseflow-admin",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "PulseFlow",
+      "lastName": "Admin",
+      "email": "pulseflow-admin@local.dev",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "admin123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "ADMIN"
+      ]
+    },
+    {
+      "username": "pulseflow-employee",
+      "enabled": true,
+      "emailVerified": true,
+      "firstName": "PulseFlow",
+      "lastName": "Employee",
+      "email": "pulseflow-employee@local.dev",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "employee123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": [
+        "EMPLOYEE"
+      ]
+    }
+  ],
+  "clients": [
+    {
+      "clientId": "pulseflow-frontend",
+      "name": "PulseFlow Frontend",
+      "enabled": true,
+      "publicClient": true,
+      "protocol": "openid-connect",
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": false,
+      "serviceAccountsEnabled": false,
+      "implicitFlowEnabled": false,
+      "fullScopeAllowed": true,
+      "defaultClientScopes": [
+        "web-origins",
+        "profile",
+        "email",
+        "roles"
+      ],
+      "redirectUris": [
+        "http://localhost:5173/*",
+        "http://localhost:3000/*",
+        "http://localhost/*"
+      ],
+      "webOrigins": [
+        "http://localhost:5173",
+        "http://localhost:3000",
+        "http://localhost"
+      ],
+      "attributes": {
+        "pkce.code.challenge.method": "S256"
+      }
+    },
+    {
+      "clientId": "pulseflow-postman",
+      "name": "PulseFlow Postman",
+      "enabled": true,
+      "publicClient": false,
+      "protocol": "openid-connect",
+      "standardFlowEnabled": false,
+      "directAccessGrantsEnabled": true,
+      "serviceAccountsEnabled": false,
+      "implicitFlowEnabled": false,
+      "fullScopeAllowed": true,
+      "secret": "pulseflow-postman-secret"
+    }
+  ]
+}
