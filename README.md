@@ -1552,9 +1552,28 @@ Open `http://localhost:5173` and sign in with Keycloak (`pulseflow-admin` / `adm
 
 For a full Docker stack including the SPA: `docker compose up --build` then open `http://localhost:3000`.
 
-### Step 7: Smoke Test
+### Step 7: Smoke Test / Demo seed data
 
-Create a test event:
+Fresh `docker compose up --build` applies Flyway through **V23**, which seeds demo rows for tenant `default` so every admin page shows sample data (notifications, rules, delivery/audit logs, channels, templates, applications).
+
+In the UI topbar keep:
+- **tenantId:** `default`
+- **userId:** `demo-user`
+
+Login: `pulseflow-admin` / `admin123`.
+
+If the database was created before V23, either recreate volumes or apply the SQL mirror:
+
+```powershell
+docker compose down -v
+docker compose up -d --build
+```
+
+```powershell
+Get-Content .\scripts\seed-demo.sql | docker exec -i pulseflow-postgres psql -U postgres -d pulseflow
+```
+
+Create an additional test event (optional):
 
 ```bash
 curl -X POST "http://localhost:8081/api/v1/notifications/events" \
@@ -1575,7 +1594,7 @@ curl -X POST "http://localhost:8081/api/v1/notifications/events" \
   }'
 ```
 
-Then open the Dashboard in the frontend (set `userId` to `demo-user` in the topbar) to see the notification.
+Then open the Dashboard in the frontend (keep `userId` = `demo-user` in the topbar) to see notifications.
 
 ---
 
