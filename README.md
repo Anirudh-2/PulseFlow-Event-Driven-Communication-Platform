@@ -1145,6 +1145,8 @@ The frontend SPA is branded **PulseFlow**. Each route maps to a feature module a
 | Filter by status/priority | Client-side filtering |
 | Mark as read | `POST /notifications/{id}/read` |
 
+![Dashboard — notification inbox with stat cards for total, unread, critical, and acknowledged counts](screenshots/dashboard.png)
+
 ### 10.2 Rules (`/rules`)
 
 **Module:** [features/rules/RulesPage.tsx](frontend/src/features/rules/RulesPage.tsx)
@@ -1152,6 +1154,8 @@ The frontend SPA is branded **PulseFlow**. Each route maps to a feature module a
 Read-only table of notification rules. Full CRUD is available under Configuration → Rules tab.
 
 | API | `GET /admin/rules?tenantId` |
+
+![Rule Management — read-only table of notification rules with role, type, channels, priority, order, and status](screenshots/rules.png)
 
 ### 10.3 Delivery Logs (`/delivery`)
 
@@ -1163,6 +1167,8 @@ Read-only table of notification rules. Full CRUD is available under Configuratio
 | Expandable error messages | Client-side |
 | Per-notification drill-down | `GET /admin/delivery/{notificationId}` |
 
+![Delivery Logs — per-channel delivery attempts with status (DELIVERED, FAILED, SKIPPED, DEAD_LETTERED) and error details](screenshots/delivery-logs.png)
+
 ### 10.4 Audit Logs (`/audit`)
 
 **Module:** [features/audit/AuditLogsPage.tsx](frontend/src/features/audit/AuditLogsPage.tsx)
@@ -1171,6 +1177,8 @@ Read-only table of notification rules. Full CRUD is available under Configuratio
 |---------|-----|
 | Paginated audit trail | `GET /admin/audit?tenantId` |
 | Expandable JSON metadata | Client-side |
+
+![Audit Trail — full history of notification actions (CREATED, DELIVERED, READ, ACKNOWLEDGED, DEAD_LETTERED) with expandable metadata](screenshots/audit-logs.png)
 
 ### 10.5 Channels (`/channels`)
 
@@ -1187,6 +1195,8 @@ Per-app channel configuration management.
 
 Supported channel types: `teams`, `whatsapp`, `telegram`, `smtp`, `webhook`.
 
+![Channels — add channel configuration and per-app channel credentials table with test connectivity](screenshots/channels.png)
+
 ### 10.6 Template Library (`/templates`)
 
 **Module:** [features/templates/TemplatesPage.tsx](frontend/src/features/templates/TemplatesPage.tsx)
@@ -1197,11 +1207,17 @@ Supported channel types: `teams`, `whatsapp`, `telegram`, `smtp`, `webhook`.
 | Live preview with `{{variable}}` substitution | Client-side |
 | Variable token detection | Client-side from sample payload |
 
+![Template Library — templates grouped by event and channel, plus a create-template form with live preview](screenshots/template-library.png)
+
 ### 10.7 Applications (`/applications`)
 
 **Module:** [features/applications/ApplicationsPage.tsx](frontend/src/features/applications/ApplicationsPage.tsx)
 
 Wrapper around `PlatformAdminPanel` for integration source management.
+
+![Registered Applications — integration sources, field mappings, and tenant channel configs](screenshots/applications-1.png)
+
+![Registered Applications continued — tenant channel configs, DB-backed routing rules, and DB notification templates](screenshots/applications-2.png)
 
 ### 10.8 Configuration (`/configuration`)
 
@@ -1220,17 +1236,27 @@ Three tabs:
 | Integration mapping | `forms/HrmsMappingForm.tsx` | `GET/PUT /admin/config/hrms-mapping` |
 | Template defaults | `forms/TemplateSettingsForm.tsx` | `GET/PUT /admin/templates` |
 
+![Configuration → Integrations — Microsoft Teams incoming webhook and SMTP email settings](screenshots/config-integrations-1.png)
+
+![Configuration → Integrations continued — webhook security (API key) and integration field/event-type mapping](screenshots/config-integrations-2.png)
+
 #### Tab 2: Rules
 
 `RuleEditor.tsx` — full notification rules CRUD with channel checkboxes.
 
 | API | `GET/POST/PUT/DELETE /admin/rules` |
 
+![Configuration → Rules — Rule Editor with channel checkboxes, JSON Logic conditions, and existing rules table](screenshots/config-rules.png)
+
 #### Tab 3: Platform
 
 `PlatformAdminPanel.tsx` — integration sources, field mappings, tenant channel configs, routing rules, DB templates.
 
 | APIs | `/admin/integrations/sources`, `/admin/integrations/field-mappings`, `/admin/channel-configs`, `/admin/routing-rules`, `/admin/db-templates` |
+
+![Configuration → Platform — integration sources and field mappings](screenshots/config-platform-1.png)
+
+![Configuration → Platform continued — tenant channel configs, DB-backed routing rules, and DB notification templates](screenshots/config-platform-2.png)
 
 ### 10.9 Settings (`/settings`)
 
